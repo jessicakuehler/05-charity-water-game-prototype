@@ -13,3 +13,264 @@ Secondary Colors:
 - Pink:       #F16061
 
 */
+
+body {
+	margin: 0;
+	padding-top: 2rem;
+	text-align: center;
+}
+
+p {
+	margin: 0;
+	color: #FFC907;
+	font-size: 1.25rem;
+	transform: translateY(-0.5rem);
+}
+
+h1 {
+	margin: 0;
+	color: #2E9DF7;
+	font-size: 3rem;
+}
+
+.game-grid {
+	display: grid;
+	container-type: inline-size;
+	grid-template-columns: repeat(7, minmax(0, 1fr));
+	grid-template-rows: repeat(6, minmax(0, 1fr));
+	gap: 0.5rem;
+	width: min(90vw, 560px);
+	aspect-ratio: 7 / 6;
+	margin: 2rem auto;
+}
+
+.game-layout {
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	gap: 1.25rem;
+	width: min(96vw, 880px);
+	margin: 2rem auto;
+}
+
+.game-layout .game-grid {
+	flex: 0 1 560px;
+	margin: 0;
+}
+
+.game-status {
+	flex: 0 0 120px;
+	text-align: center;
+}
+
+.score-status {
+	flex: 0 0 120px;
+	text-align: center;
+}
+
+.score-status p {
+	margin: 0;
+	transform: none;
+}
+
+.score-label {
+	color: #2E9DF7;
+	font-size: 1rem;
+}
+
+.score-value {
+	color: #2E9DF7;
+	font-size: 2.5rem;
+	font-weight: bold;
+}
+
+.game-status p {
+	margin: 0;
+	transform: none;
+}
+
+.moves-label {
+	color: #2E9DF7;
+	font-size: 1rem;
+}
+
+.moves-value {
+	color: #2E9DF7;
+	font-size: 2.5rem;
+	font-weight: bold;
+}
+
+.game-message {
+	min-height: 2.5em;
+	margin-top: 0.75rem !important;
+	font-size: 1rem;
+}
+
+.game-message.win {
+	color: #159A48;
+}
+
+.game-message.fail {
+	color: #F5402C;
+}
+
+.restart-button {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	z-index: 10;
+	transform: translate(-50%, -50%);
+	margin: 0;
+	padding: 1rem 1.5rem;
+	border: 0;
+	border-radius: 4px;
+	background-color: #2E9DF7;
+	color: #fff;
+	font: inherit;
+	font-size: 3rem;
+	line-height: 1.1;
+	cursor: pointer;
+}
+
+.restart-button:hover {
+	background-color: #1686E0;
+}
+
+.restart-button:focus-visible {
+	outline: 3px solid #FFC907;
+	outline-offset: 3px;
+}
+
+.restart-button[hidden] {
+	display: none;
+}
+
+.game-grid.animating,
+.game-grid.game-over {
+	pointer-events: none;
+}
+
+.grid-cell {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	border: 2px solid #2E9DF7;
+	border-radius: 4px;
+	background-color: #FFC907;
+	transition: background-color 0.3s ease;
+}
+
+.grid-cell.matched {
+	background-color: #EAF7FF;
+}
+
+.grid-cell.selected {
+	outline: 4px solid #FFC907;
+	outline-offset: -4px;
+}
+
+.cell-effect {
+	display: inline-block;
+	font-size: clamp(1.25rem, 7vw, 2.5rem);
+	font-size: clamp(1rem, 8cqw, 2.5rem);
+	line-height: 1;
+}
+
+.cell-effect.disappearing {
+	animation: disappear 0.3s ease-in forwards;
+}
+
+.water-drop {
+	animation: drop-bob 1.6s ease-in-out infinite;
+}
+
+.steam-vapor {
+	animation: vapor-rise 2.2s ease-in-out infinite;
+}
+
+.ice-crystal {
+	animation: crystal-shimmer 2.8s ease-in-out infinite;
+}
+
+@keyframes drop-bob {
+	0%,
+	100% {
+		transform: translateY(-3px);
+	}
+	50% {
+		transform: translateY(4px);
+	}
+}
+
+@keyframes vapor-rise {
+	0%,
+	100% {
+		opacity: 0.65;
+		transform: translateY(4px);
+	}
+	50% {
+		opacity: 1;
+		transform: translateY(-5px);
+	}
+}
+
+@keyframes crystal-shimmer {
+	0%,
+	100% {
+		transform: scale(0.92) rotate(-5deg);
+	}
+	50% {
+		transform: scale(1.08) rotate(5deg);
+	}
+}
+
+@keyframes disappear {
+	to {
+		opacity: 0;
+		transform: scale(0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.cell-effect,
+	.cell-effect.disappearing {
+		animation: none;
+	}
+}
+
+@media (max-width: 600px) {
+	.game-layout {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		grid-template-areas:
+			"score moves"
+			"board board";
+		align-items: start;
+		gap: 0.75rem;
+		width: min(96vw, 560px);
+	}
+
+	.game-layout .game-grid {
+		grid-area: board;
+		width: 100%;
+		flex: none;
+	}
+
+	.game-status {
+		grid-area: moves;
+		flex-basis: auto;
+	}
+
+	.score-status {
+		grid-area: score;
+		flex-basis: auto;
+	}
+}
+
+@media (max-width: 360px) {
+	h1,
+	.restart-button {
+		font-size: 2.5rem;
+	}
+}

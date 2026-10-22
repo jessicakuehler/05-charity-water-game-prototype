@@ -7,7 +7,21 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Welcome to the Charity Water Game Prototype</h1>
+    <p>Welcome to the Charity Water Game Prototype</p>
+    <h1>Water Wash</h1>
+    <div class="game-layout">
+        <aside class="score-status" aria-label="Score">
+            <p class="score-label">Score</p>
+            <p class="score-value" id="score-value">0</p>
+        </aside>
+        <div class="game-grid" role="grid" aria-label="Water Wash game board"></div>
+        <aside class="game-status" aria-label="Game status">
+            <p class="moves-label">Moves left</p>
+            <p class="moves-value" id="moves-left">20</p>
+            <p class="game-message" id="game-message" aria-live="polite"></p>
+            <button class="restart-button" id="restart-button" type="button" hidden>Restart</button>
+        </aside>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
