@@ -20,6 +20,95 @@ body {
 	text-align: center;
 }
 
+[hidden] {
+	display: none !important;
+}
+
+.start-screen {
+	position: relative;
+	display: flex;
+	min-height: 100vh;
+	min-height: 100svh;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	margin-top: -2rem;
+	padding: 2rem 1rem;
+	box-sizing: border-box;
+	background-image: url("img/wayanad-tea-fields.jpg");
+	background-position: center;
+	background-size: cover;
+}
+
+.start-level-status {
+	position: absolute;
+	top: 0;
+	right: 1rem;
+	padding: 0.75rem;
+	border: 2px solid #1F1D1D;
+	border-radius: 6px;
+	background-color: #fff;
+	box-sizing: border-box;
+}
+
+.start-bucket {
+	position: absolute;
+	top: 0;
+	left: 1rem;
+	display: flex;
+	width: 7rem;
+	height: 7rem;
+	align-items: flex-start;
+	justify-content: center;
+	padding: 0.25rem;
+	border: 2px solid #1F1D1D;
+	border-radius: 6px;
+	background-color: #fff;
+	box-sizing: border-box;
+	transform: translateY(-0.75rem);
+}
+
+.start-bucket svg {
+	width: 100%;
+	height: 100%;
+	fill: none;
+	stroke: #000;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	stroke-width: 3.5;
+}
+
+#bucket-water {
+	fill: #2E9DF7;
+	stroke: none;
+	transition: y 0.8s ease, height 0.8s ease;
+}
+
+.start-level-status p {
+	margin: 0;
+	transform: none;
+}
+
+.start-level-status .level-label {
+	color: #2E9DF7;
+	font-size: 1.25rem;
+	font-weight: bold;
+}
+
+.start-level-status .level-value {
+	display: flex;
+	width: 4rem;
+	height: 4rem;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto;
+	border: 4px solid #2E9DF7;
+	border-radius: 50%;
+	color: #2E9DF7;
+	font-size: 2rem;
+	font-weight: bold;
+}
+
 p {
 	margin: 0;
 	color: #FFC907;
@@ -37,8 +126,8 @@ p {
 
 .welcome-logo {
 	flex: 0 0 auto;
-	width: 3rem;
-	height: 3rem;
+	width: clamp(2rem, 6vw, 3rem);
+	height: clamp(2rem, 6vw, 3rem);
 	object-fit: contain;
 }
 
@@ -47,10 +136,122 @@ p {
 	transform: none;
 }
 
+#start-screen .welcome-line,
+#game-screen .welcome-line {
+	gap: 0;
+	background-color: #1F1D1D;
+}
+
+#start-screen .welcome-message,
+#game-screen .welcome-message {
+	display: flex;
+	min-width: 0;
+	min-height: clamp(2.5rem, 7vw, 3rem);
+	align-items: center;
+	padding: 0.5rem clamp(0.5rem, 2.5vw, 1rem);
+	box-sizing: border-box;
+	color: #fff;
+	font-size: clamp(0.9rem, 3vw, 1.25rem);
+}
+
+#game-screen {
+	width: 100%;
+	min-height: 100vh;
+	min-height: 100svh;
+	margin: -2rem 0 0;
+	padding: 2rem clamp(0.5rem, 2vw, 1rem);
+	box-sizing: border-box;
+	background-image: url("img/khone-phapheng-falls.jpg");
+	background-position: center;
+	background-size: cover;
+}
+
 h1 {
 	margin: 0;
 	color: #2E9DF7;
 	font-size: 3rem;
+}
+
+#start-screen h1,
+#game-screen h1 {
+	padding: 1rem 0;
+	color: #2E9DF7;
+	font-size: clamp(2.5rem, 8vw, 4.5rem);
+	line-height: 1.1;
+	-webkit-text-stroke: 2px #1F1D1D;
+}
+
+.start-actions {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1.25rem;
+	width: min(100%, 32rem);
+	margin-top: auto;
+}
+
+.start-footer {
+	margin-top: auto;
+	padding: 1.5rem 0 1rem;
+}
+
+.start-footer a {
+	color: #FFC907;
+	font-weight: bold;
+	text-shadow: 1px 1px 2px #1F1D1D, -1px -1px 2px #1F1D1D;
+}
+
+.start-footer a:focus-visible {
+	outline: 3px solid #FFC907;
+	outline-offset: 3px;
+}
+
+.start-button {
+	margin: 0;
+	padding: clamp(1rem, 4vw, 1.75rem) clamp(1.5rem, 12vw, 5rem);
+	border: 2px solid #1F1D1D;
+	border-radius: 4px;
+	background-color: #2E9DF7;
+	color: #fff;
+	font: inherit;
+	font-size: clamp(1.75rem, 6vw, 3rem);
+	cursor: pointer;
+}
+
+.start-button:hover,
+.difficulty-button:hover {
+	background-color: #1686E0;
+}
+
+.start-button:focus-visible,
+.difficulty-button:focus-visible {
+	outline: 3px solid #FFC907;
+	outline-offset: 3px;
+}
+
+.difficulty-buttons {
+	display: flex;
+	justify-content: center;
+	gap: 0.75rem;
+	width: 100%;
+}
+
+.difficulty-button {
+	min-width: clamp(5.5rem, 12vw, 8rem);
+	padding: clamp(0.65rem, 2.5vw, 1.1rem) clamp(0.4rem, 3vw, 1.35rem);
+	border: 3px solid #FFC907;
+	border-radius: 4px;
+	background-color: #fff;
+	box-shadow: 0 0 0 2px #1F1D1D;
+	color: #000;
+	font: inherit;
+	font-size: clamp(1rem, 3vw, 1.35rem);
+	cursor: pointer;
+}
+
+.difficulty-button[aria-pressed="true"] {
+	background-color: #2E9DF7;
+	color: #fff;
 }
 
 .game-grid {
@@ -58,8 +259,8 @@ h1 {
 	container-type: inline-size;
 	grid-template-columns: repeat(7, minmax(0, 1fr));
 	grid-template-rows: repeat(6, minmax(0, 1fr));
-	gap: 0.5rem;
-	width: min(90vw, 560px);
+	gap: clamp(0.25rem, 1vw, 0.5rem);
+	width: min(100%, 560px);
 	aspect-ratio: 7 / 6;
 	margin: 2rem auto;
 }
@@ -68,9 +269,10 @@ h1 {
 	display: flex;
 	align-items: flex-start;
 	justify-content: center;
-	gap: 1.25rem;
-	width: min(96vw, 880px);
-	margin: 2rem auto;
+	gap: clamp(0.5rem, 2vw, 1.25rem);
+	width: 100%;
+	max-width: 880px;
+	margin: 0 auto 2rem;
 }
 
 .game-layout .game-grid {
@@ -80,12 +282,97 @@ h1 {
 
 .game-status {
 	flex: 0 0 120px;
+	display: flex;
+	flex-direction: column;
+	align-self: stretch;
+	justify-content: space-between;
 	text-align: center;
 }
 
 .score-status {
 	flex: 0 0 120px;
+	display: flex;
+	flex-direction: column;
+	align-self: stretch;
+	justify-content: space-between;
 	text-align: center;
+}
+
+.score-display,
+.moves-display {
+	width: fit-content;
+	margin: 0 auto;
+	padding: clamp(0.5rem, 2vw, 0.75rem) clamp(0.4rem, 1.5vw, 0.5rem);
+	border: 2px solid #1F1D1D;
+	border-radius: 6px;
+	background-color: #fff;
+	box-sizing: border-box;
+}
+
+.home-button {
+	display: flex;
+	width: 3.5rem;
+	height: 3.5rem;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto;
+	padding: 0.5rem;
+	border: 2px solid #1F1D1D;
+	border-radius: 6px;
+	background-color: #fff;
+	cursor: pointer;
+}
+
+.home-button svg {
+	width: 100%;
+	height: 100%;
+	fill: #FFC907;
+	stroke: #000;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	stroke-width: 3;
+}
+
+.home-button:hover {
+	background-color: #EAF7FF;
+}
+
+#game-screen .home-button:hover {
+	background-color: #1F1D1D;
+}
+
+.home-button:focus-visible {
+	outline: 3px solid #FFC907;
+	outline-offset: 3px;
+}
+
+.extra-life-button {
+	width: 3.5rem;
+	height: 3.5rem;
+	margin: 0 auto;
+	border: 2px solid #1F1D1D;
+	border-radius: 6px;
+	background-color: #F5402C;
+	color: #fff;
+	font: inherit;
+	font-size: 2.5rem;
+	font-weight: bold;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.extra-life-button:hover:not(:disabled) {
+	background-color: #D93220;
+}
+
+.extra-life-button:focus-visible {
+	outline: 3px solid #FFC907;
+	outline-offset: 3px;
+}
+
+.extra-life-button:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
 }
 
 .score-status p {
@@ -94,13 +381,13 @@ h1 {
 }
 
 .score-label {
-	color: #2E9DF7;
-	font-size: 1rem;
+	color: #1F1D1D;
+	font-size: clamp(0.9rem, 2.5vw, 1rem);
 }
 
 .score-value {
-	color: #2E9DF7;
-	font-size: 2.5rem;
+	color: #1F1D1D;
+	font-size: clamp(1.75rem, 6vw, 2.5rem);
 	font-weight: bold;
 }
 
@@ -110,13 +397,13 @@ h1 {
 }
 
 .moves-label {
-	color: #2E9DF7;
-	font-size: 1rem;
+	color: #1F1D1D;
+	font-size: clamp(0.9rem, 2.5vw, 1rem);
 }
 
 .moves-value {
-	color: #2E9DF7;
-	font-size: 2.5rem;
+	color: #1F1D1D;
+	font-size: clamp(1.75rem, 6vw, 2.5rem);
 	font-weight: bold;
 }
 
@@ -144,7 +431,7 @@ h1 {
 	padding: 1rem 1.5rem;
 	border: 0;
 	border-radius: 4px;
-	background-color: #2E9DF7;
+	background-color: #1F1D1D;
 	color: #fff;
 	font: inherit;
 	font-size: 3rem;
@@ -153,7 +440,7 @@ h1 {
 }
 
 .restart-button:hover {
-	background-color: #1686E0;
+	background-color: #1F1D1D;
 }
 
 .restart-button:focus-visible {
@@ -175,7 +462,7 @@ h1 {
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
-	border: 2px solid #2E9DF7;
+	border: 2px solid #1F1D1D;
 	border-radius: 4px;
 	background-color: #FFC907;
 	transition: background-color 0.3s ease;
@@ -183,6 +470,10 @@ h1 {
 
 .grid-cell.matched {
 	background-color: #EAF7FF;
+}
+
+#game-screen .grid-cell.matched {
+	background-color: #BFE6F3;
 }
 
 .grid-cell.selected {
@@ -260,15 +551,46 @@ h1 {
 }
 
 @media (max-width: 600px) {
+	.start-bucket {
+		width: 6rem;
+		height: 6rem;
+	}
+
+	.start-bucket svg {
+		width: 100%;
+		height: 100%;
+	}
+
+	.start-level-status .level-label {
+		font-size: 1.1rem;
+	}
+
+	.start-level-status .level-value {
+		width: 3.5rem;
+		height: 3.5rem;
+		font-size: 1.75rem;
+	}
+
+	.difficulty-button {
+		flex: 1;
+		min-width: 0;
+		padding: clamp(0.55rem, 3vw, 0.95rem) clamp(0.25rem, 2vw, 0.5rem);
+		font-size: clamp(0.95rem, 4vw, 1.2rem);
+	}
+
 	.game-layout {
+		position: relative;
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		grid-template-areas:
 			"score moves"
 			"board board";
 		align-items: start;
-		gap: 0.75rem;
-		width: min(96vw, 560px);
+		gap: clamp(0.5rem, 2vw, 0.75rem);
+		width: 100%;
+		max-width: 560px;
+		padding-bottom: 4rem;
+		box-sizing: border-box;
 	}
 
 	.game-layout .game-grid {
@@ -285,11 +607,23 @@ h1 {
 	.score-status {
 		grid-area: score;
 		flex-basis: auto;
+		align-self: start;
+	}
+
+	.home-button {
+		position: absolute;
+		bottom: 0;
+		left: calc(25% - 1.75rem);
+	}
+
+	.extra-life-button {
+		position: absolute;
+		right: calc(25% - 1.75rem);
+		bottom: 0;
 	}
 }
 
 @media (max-width: 360px) {
-	h1,
 	.restart-button {
 		font-size: 2.5rem;
 	}

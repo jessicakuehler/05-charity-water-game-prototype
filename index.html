@@ -7,25 +7,75 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="welcome-line">
-        <img class="welcome-logo" src="img/water-can.png" alt="">
-        <p class="welcome-message">Welcome to the Charity Water Game Prototype</p>
-        <img class="welcome-logo" src="img/water-can.png" alt="">
-    </div>
-    <h1>Water Wash</h1>
-    <div class="game-layout">
-        <aside class="score-status" aria-label="Score">
-            <p class="score-label">Score</p>
-            <p class="score-value" id="score-value">0</p>
-        </aside>
-        <div class="game-grid" role="grid" aria-label="Water Wash game board"></div>
-        <aside class="game-status" aria-label="Game status">
-            <p class="moves-label">Moves left</p>
-            <p class="moves-value" id="moves-left">20</p>
-            <p class="game-message" id="game-message" aria-live="polite"></p>
-            <button class="restart-button" id="restart-button" type="button" hidden>Restart</button>
-        </aside>
-    </div>
+    <main class="start-screen" id="start-screen">
+        <div class="start-bucket">
+            <svg id="start-bucket" viewBox="0 0 100 100" role="img" aria-label="Bucket 0% full, 0 of 200 points toward the next level">
+                <defs>
+                    <clipPath id="bucket-interior">
+                        <path d="M27 33h46l-7 43q-16 7-32 0z" />
+                    </clipPath>
+                </defs>
+                <rect id="bucket-water" x="25" y="78" width="50" height="0" clip-path="url(#bucket-interior)" />
+                <path d="M25 30h50l-7 48a29 8 0 0 1-36 0z" />
+                <path d="M34 39l5 34M66 39l-5 34" />
+            </svg>
+        </div>
+        <div class="start-level-status" role="group" aria-label="Level 1">
+            <p class="level-label">Level</p>
+            <p class="level-value" id="level-value">1</p>
+        </div>
+        <div class="welcome-line">
+            <img class="welcome-logo" src="img/water-can.png" alt="">
+            <p class="welcome-message">Welcome to the Charity Water Game Prototype</p>
+            <img class="welcome-logo" src="img/water-can.png" alt="">
+        </div>
+        <h1>Water Wash</h1>
+        <div class="start-actions">
+            <button class="start-button" id="start-button" type="button">Start</button>
+            <div class="difficulty-buttons" role="group" aria-label="Choose difficulty">
+                <button class="difficulty-button" type="button" data-moves="25" aria-pressed="false">Easy</button>
+                <button class="difficulty-button" type="button" data-moves="20" aria-pressed="true">Regular</button>
+                <button class="difficulty-button" type="button" data-moves="15" aria-pressed="false">Hard</button>
+            </div>
+        </div>
+        <footer class="start-footer">
+            <a href="https://www.charitywater.org">Visit charity: water</a>
+        </footer>
+    </main>
+    <main id="game-screen" hidden>
+        <div class="welcome-line">
+            <img class="welcome-logo" src="img/water-can.png" alt="">
+            <p class="welcome-message">Welcome to the Charity Water Game Prototype</p>
+            <img class="welcome-logo" src="img/water-can.png" alt="">
+        </div>
+        <h1 id="game-title" tabindex="-1">Water Wash</h1>
+        <div class="game-layout">
+            <aside class="score-status" aria-label="Score">
+                <div class="score-display">
+                    <p class="score-label">Score</p>
+                    <p class="score-value" id="score-value">0</p>
+                </div>
+                <button class="home-button" id="home-button" type="button" aria-label="Return to start page" title="Home">
+                    <svg viewBox="0 0 48 48" aria-hidden="true">
+                        <path d="M5 22 24 6l19 16" />
+                        <path d="M11 20v22h26V20M20 42V29h8v13" />
+                    </svg>
+                </button>
+            </aside>
+            <div class="game-grid" role="grid" aria-label="Water Wash game board"></div>
+            <aside class="game-status" aria-label="Game status">
+                <div class="moves-status">
+                    <div class="moves-display">
+                        <p class="moves-label">Moves left</p>
+                        <p class="moves-value" id="moves-left">20</p>
+                    </div>
+                    <p class="game-message" id="game-message" aria-live="polite"></p>
+                </div>
+                <button class="extra-life-button" id="extra-life-button" type="button" aria-label="Buy one extra move for 10 points" title="Buy one extra move for 10 points" disabled>+</button>
+                <button class="restart-button" id="restart-button" type="button" hidden>Restart</button>
+            </aside>
+        </div>
+    </main>
     <script src="script.js"></script>
 </body>
 </html>
