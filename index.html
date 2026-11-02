@@ -8,26 +8,28 @@
 </head>
 <body>
     <main class="start-screen" id="start-screen">
-        <div class="start-bucket">
-            <svg id="start-bucket" viewBox="0 0 100 100" role="img" aria-label="Bucket 0% full, 0 of 200 points toward the next level">
-                <defs>
-                    <clipPath id="bucket-interior">
-                        <path d="M27 33h46l-7 43q-16 7-32 0z" />
-                    </clipPath>
-                </defs>
-                <rect id="bucket-water" x="25" y="78" width="50" height="0" clip-path="url(#bucket-interior)" />
-                <path d="M25 30h50l-7 48a29 8 0 0 1-36 0z" />
-                <path d="M34 39l5 34M66 39l-5 34" />
-            </svg>
-        </div>
-        <div class="start-level-status" role="group" aria-label="Level 1">
-            <p class="level-label">Level</p>
-            <p class="level-value" id="level-value">1</p>
-        </div>
         <div class="welcome-line">
             <img class="welcome-logo" src="img/water-can.png" alt="">
             <p class="welcome-message">Welcome to the Charity Water Game Prototype</p>
             <img class="welcome-logo" src="img/water-can.png" alt="">
+        </div>
+        <div class="start-progress">
+            <div class="start-bucket">
+                <svg id="start-bucket" viewBox="0 0 100 100" role="img" aria-label="Bucket 0% full, 0 of 200 points toward the next level">
+                    <defs>
+                        <clipPath id="bucket-interior">
+                            <path d="M27 33h46l-7 43q-16 7-32 0z" />
+                        </clipPath>
+                    </defs>
+                    <rect id="bucket-water" x="25" y="78" width="50" height="0" clip-path="url(#bucket-interior)" />
+                    <path d="M25 30h50l-7 48a29 8 0 0 1-36 0z" />
+                    <path d="M34 39l5 34M66 39l-5 34" />
+                </svg>
+            </div>
+            <div class="start-level-status" role="group" aria-label="Level 1">
+                <p class="level-label">Level</p>
+                <p class="level-value" id="level-value">1</p>
+            </div>
         </div>
         <h1>Water Wash</h1>
         <div class="start-actions">

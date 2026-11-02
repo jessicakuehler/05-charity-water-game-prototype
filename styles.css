@@ -40,6 +40,13 @@ body {
 	background-size: cover;
 }
 
+.start-progress {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+}
+
 .start-level-status {
 	position: absolute;
 	top: 0;
@@ -551,9 +558,20 @@ h1 {
 }
 
 @media (max-width: 600px) {
+	.start-progress {
+		position: static;
+		display: flex;
+		width: 100%;
+		align-items: flex-start;
+		justify-content: space-between;
+		margin-top: 0.75rem;
+	}
+
 	.start-bucket {
+		position: static;
 		width: 6rem;
 		height: 6rem;
+		transform: none;
 	}
 
 	.start-bucket svg {
@@ -563,6 +581,10 @@ h1 {
 
 	.start-level-status .level-label {
 		font-size: 1.1rem;
+	}
+
+	.start-level-status {
+		position: static;
 	}
 
 	.start-level-status .level-value {
