@@ -41,16 +41,14 @@ body {
 }
 
 .start-progress {
-	position: absolute;
-	top: 0;
-	right: 0;
-	left: 0;
+	display: flex;
+	width: 100%;
+	align-items: flex-start;
+	justify-content: space-between;
+	margin-top: 0.75rem;
 }
 
 .start-level-status {
-	position: absolute;
-	top: 0;
-	right: 1rem;
 	padding: 0.75rem;
 	border: 2px solid #1F1D1D;
 	border-radius: 6px;
@@ -59,9 +57,6 @@ body {
 }
 
 .start-bucket {
-	position: absolute;
-	top: 0;
-	left: 1rem;
 	display: flex;
 	width: 7rem;
 	height: 7rem;
@@ -72,7 +67,6 @@ body {
 	border-radius: 6px;
 	background-color: #fff;
 	box-sizing: border-box;
-	transform: translateY(-0.75rem);
 }
 
 .start-bucket svg {
@@ -559,19 +553,12 @@ h1 {
 
 @media (max-width: 600px) {
 	.start-progress {
-		position: static;
-		display: flex;
-		width: 100%;
-		align-items: flex-start;
-		justify-content: space-between;
-		margin-top: 0.75rem;
+		margin-top: clamp(3rem, 10vh, 6rem);
 	}
 
 	.start-bucket {
-		position: static;
 		width: 6rem;
 		height: 6rem;
-		transform: none;
 	}
 
 	.start-bucket svg {
@@ -581,10 +568,6 @@ h1 {
 
 	.start-level-status .level-label {
 		font-size: 1.1rem;
-	}
-
-	.start-level-status {
-		position: static;
 	}
 
 	.start-level-status .level-value {
