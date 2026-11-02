@@ -12,6 +12,7 @@ const scoreDisplay = document.querySelector('#score-value');
 const movesDisplay = document.querySelector('#moves-left');
 const gameMessage = document.querySelector('#game-message');
 const extraLifeButton = document.querySelector('#extra-life-button');
+const roundResult = document.querySelector('#round-result');
 const restartButton = document.querySelector('#restart-button');
 const levelValueDisplay = document.querySelector('#level-value');
 const startLevelStatus = document.querySelector('.start-level-status');
@@ -25,16 +26,31 @@ const effects = [
 	{ symbol: '❄️', className: 'ice-crystal' },
 ];
 const levelProgress = loadLevelProgress();
-let selectedCell = null;
 let movesLeft = 20;
 let moveLimit = 20;
+let pointsPerMatch = 3;
 let score = 0;
 let roundPointsEarned = 0;
 let roundPointsSpent = 0;
 let gameOver = false;
 let matchAnimationTimeout = null;
+let roundEndEffect = null;
+let swipeStart = null;
+let gameAudioContext = null;
+let audioSupportWarningShown = false;
+let roundEndNoiseBuffer = null;
+let roundEndSoundSources = new Set();
+let roundEndSoundInterval = null;
+let roundEndSoundType = null;
+let celebrationNoteIndex = 0;
 
 updateLevelDisplay();
+
+document.addEventListener('click', function (event) {
+	if (event.target.closest('button')) {
+		playButtonSound();
+	}
+}, true);
 
 startButton.addEventListener('click', function () {
 	movesLeft = moveLimit;
@@ -59,9 +75,11 @@ extraLifeButton.addEventListener('click', function () {
 
 	if (gameOver) {
 		gameOver = false;
+		clearRoundEndEffect();
 		gameGrid.classList.remove('game-over');
 		gameMessage.textContent = '';
 		gameMessage.className = 'game-message';
+		roundResult.hidden = true;
 		restartButton.hidden = true;
 	}
 });
@@ -76,6 +94,7 @@ homeButton.addEventListener('click', function () {
 difficultyButtons.forEach(function (button) {
 	button.addEventListener('click', function () {
 		moveLimit = Number(button.dataset.moves);
+		pointsPerMatch = Number(button.dataset.pointsPerMatch);
 		difficultyButtons.forEach(function (difficultyButton) {
 			difficultyButton.setAttribute('aria-pressed', difficultyButton === button);
 		});
@@ -101,7 +120,11 @@ function finishMove() {
 
 	if (gameOver) {
 		gameGrid.classList.add('game-over');
+		roundResult.textContent = playerWon ? 'You Win!' : 'You Lose';
+		roundResult.className = `round-result ${playerWon ? 'win' : 'lose'}`;
+		roundResult.hidden = false;
 		restartButton.hidden = false;
+		showRoundEndEffect(playerWon ? 'confetti' : 'rain');
 	}
 
 	updateExtraLifeButton();
@@ -217,6 +240,8 @@ function getRandomEffectForCell(cell) {
 }
 
 function restartGame() {
+	clearRoundEndEffect();
+
 	if (matchAnimationTimeout !== null) {
 		clearTimeout(matchAnimationTimeout);
 		matchAnimationTimeout = null;
@@ -230,15 +255,17 @@ function restartGame() {
 	scoreDisplay.textContent = score;
 	gameMessage.textContent = '';
 	gameMessage.className = 'game-message';
+	roundResult.textContent = '';
+	roundResult.className = 'round-result';
+	roundResult.hidden = true;
 	restartButton.hidden = true;
 	updateExtraLifeButton();
-	selectedCell = null;
 	gameOver = false;
 	gameGrid.classList.remove('animating', 'game-over');
 
 	const cells = Array.from(gameGrid.children);
 	cells.forEach(function (cell) {
-		cell.classList.remove('matched', 'selected');
+		cell.classList.remove('matched');
 		cell.firstElementChild.className = 'cell-effect';
 		cell.firstElementChild.textContent = '';
 	});
@@ -250,6 +277,186 @@ function restartGame() {
 		effectIcon.className = `cell-effect ${randomEffect.className}`;
 		effectIcon.textContent = randomEffect.symbol;
 		effectIcon.style.animationDelay = `${Math.random() * 2}s`;
+	});
+}
+
+function showRoundEndEffect(effectType) {
+	clearRoundEndEffect();
+
+	const effectLayer = document.createElement('div');
+	const pieceCount = effectType === 'rain' ? 45 : 70;
+	effectLayer.className = `round-end-effect ${effectType}-effect`;
+	effectLayer.setAttribute('aria-hidden', 'true');
+
+	for (let index = 0; index < pieceCount; index += 1) {
+		const piece = document.createElement('span');
+		const animationDuration = effectType === 'rain'
+			? 0.7 + Math.random() * 0.6
+			: 2.5 + Math.random() * 2;
+
+		piece.className = 'round-end-effect-piece';
+		piece.style.left = `${Math.random() * 100}%`;
+		piece.style.animationDuration = `${animationDuration}s`;
+		piece.style.animationDelay = `${Math.random() * -animationDuration}s`;
+		effectLayer.appendChild(piece);
+	}
+
+	gameScreen.appendChild(effectLayer);
+	roundEndEffect = effectLayer;
+	startRoundEndSound(effectType);
+}
+
+function clearRoundEndEffect() {
+	if (roundEndEffect !== null) {
+		roundEndEffect.remove();
+		roundEndEffect = null;
+	}
+
+	stopRoundEndSound();
+}
+
+function getGameAudioContext() {
+	const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+	if (!AudioContextConstructor) {
+		if (!audioSupportWarningShown) {
+			console.warn('Game sounds are not supported by this browser.');
+			audioSupportWarningShown = true;
+		}
+
+		return null;
+	}
+
+	if (gameAudioContext === null) {
+		gameAudioContext = new AudioContextConstructor();
+	}
+
+	if (gameAudioContext.state === 'suspended') {
+		gameAudioContext.resume().catch(function (error) {
+			console.warn('Game sound could not be started.', error);
+		});
+	}
+
+	return gameAudioContext;
+}
+
+function playButtonSound() {
+	const audioContext = getGameAudioContext();
+	if (audioContext === null) {
+		return;
+	}
+
+	const oscillator = audioContext.createOscillator();
+	const volume = audioContext.createGain();
+	const startTime = audioContext.currentTime;
+
+	oscillator.type = 'triangle';
+	oscillator.frequency.setValueAtTime(720, startTime);
+	oscillator.frequency.exponentialRampToValueAtTime(460, startTime + 0.06);
+	volume.gain.setValueAtTime(0.12, startTime);
+	volume.gain.exponentialRampToValueAtTime(0.001, startTime + 0.07);
+	oscillator.connect(volume);
+	volume.connect(audioContext.destination);
+	oscillator.onended = function () {
+		oscillator.disconnect();
+		volume.disconnect();
+	};
+	oscillator.start(startTime);
+	oscillator.stop(startTime + 0.08);
+}
+
+function startRoundEndSound(effectType) {
+	stopRoundEndSound();
+	const audioContext = getGameAudioContext();
+	if (audioContext === null) {
+		return;
+	}
+
+	roundEndSoundType = effectType;
+	if (effectType === 'rain') {
+		playRainSound(audioContext);
+		return;
+	}
+
+	celebrationNoteIndex = 0;
+	playCelebrationSound(audioContext);
+	roundEndSoundInterval = window.setInterval(function () {
+		playCelebrationSound(audioContext);
+	}, 180);
+}
+
+function playRainSound(audioContext) {
+	if (roundEndNoiseBuffer === null) {
+		const bufferLength = audioContext.sampleRate * 2;
+		roundEndNoiseBuffer = audioContext.createBuffer(1, bufferLength, audioContext.sampleRate);
+		const noiseData = roundEndNoiseBuffer.getChannelData(0);
+
+		for (let index = 0; index < bufferLength; index += 1) {
+			noiseData[index] = Math.random() * 2 - 1;
+		}
+	}
+
+	const source = audioContext.createBufferSource();
+	const filter = audioContext.createBiquadFilter();
+	const volume = audioContext.createGain();
+
+	source.buffer = roundEndNoiseBuffer;
+	source.loop = true;
+	filter.type = 'lowpass';
+	filter.frequency.value = 1400;
+	volume.gain.value = 0.08;
+	source.connect(filter);
+	filter.connect(volume);
+	volume.connect(audioContext.destination);
+	source.onended = function () {
+		source.disconnect();
+		filter.disconnect();
+		volume.disconnect();
+		roundEndSoundSources.delete(source);
+	};
+	roundEndSoundSources.add(source);
+	source.start();
+}
+
+function playCelebrationSound(audioContext) {
+	if (roundEndSoundType !== 'confetti') {
+		return;
+	}
+
+	const notes = [784, 988, 1175, 1568, 1175, 1318, 1568, 1760];
+	const oscillator = audioContext.createOscillator();
+	const volume = audioContext.createGain();
+	const startTime = audioContext.currentTime;
+	const note = notes[celebrationNoteIndex % notes.length];
+	celebrationNoteIndex += 1;
+
+	oscillator.type = 'triangle';
+	oscillator.frequency.setValueAtTime(note, startTime);
+	volume.gain.setValueAtTime(0.0001, startTime);
+	volume.gain.exponentialRampToValueAtTime(0.12, startTime + 0.02);
+	volume.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.16);
+	oscillator.connect(volume);
+	volume.connect(audioContext.destination);
+	oscillator.onended = function () {
+		oscillator.disconnect();
+		volume.disconnect();
+		roundEndSoundSources.delete(oscillator);
+	};
+	roundEndSoundSources.add(oscillator);
+	oscillator.start(startTime);
+	oscillator.stop(startTime + 0.18);
+}
+
+function stopRoundEndSound() {
+	roundEndSoundType = null;
+	if (roundEndSoundInterval !== null) {
+		window.clearInterval(roundEndSoundInterval);
+		roundEndSoundInterval = null;
+	}
+
+	const activeSources = Array.from(roundEndSoundSources);
+	roundEndSoundSources.clear();
+	activeSources.forEach(function (source) {
+		source.stop();
 	});
 }
 
@@ -326,7 +533,7 @@ function clearMatches(firstSwappedCell, secondSwappedCell) {
 		return;
 	}
 
-	const pointsEarned = matches.lineCount * 3;
+	const pointsEarned = matches.lineCount * pointsPerMatch;
 	score += pointsEarned;
 	roundPointsEarned += pointsEarned;
 	scoreDisplay.textContent = score;
@@ -358,6 +565,65 @@ function clearMatches(firstSwappedCell, secondSwappedCell) {
 	}, 300);
 }
 
+gameGrid.addEventListener('pointerdown', function (event) {
+	const cell = event.target.closest('.grid-cell');
+	if (gameOver || event.button !== 0 || !cell) {
+		return;
+	}
+
+	swipeStart = {
+		cell: cell,
+		x: event.clientX,
+		y: event.clientY,
+		pointerId: event.pointerId,
+	};
+});
+
+window.addEventListener('pointerup', function (event) {
+	if (swipeStart === null || event.pointerId !== swipeStart.pointerId) {
+		return;
+	}
+
+	const start = swipeStart;
+	swipeStart = null;
+	const horizontalDistance = event.clientX - start.x;
+	const verticalDistance = event.clientY - start.y;
+
+	if (Math.max(Math.abs(horizontalDistance), Math.abs(verticalDistance)) < 20) {
+		return;
+	}
+
+	const row = Number(start.cell.dataset.row);
+	const column = Number(start.cell.dataset.column);
+	let nextRow = row;
+	let nextColumn = column;
+
+	if (Math.abs(horizontalDistance) > Math.abs(verticalDistance)) {
+		nextColumn += horizontalDistance > 0 ? 1 : -1;
+	} else {
+		nextRow += verticalDistance > 0 ? 1 : -1;
+	}
+
+	if (nextRow < 0 || nextRow >= 6 || nextColumn < 0 || nextColumn >= 7) {
+		return;
+	}
+
+	const nextCell = gameGrid.children[nextRow * 7 + nextColumn];
+	const firstEffect = start.cell.firstElementChild;
+	const secondEffect = nextCell.firstElementChild;
+	start.cell.appendChild(secondEffect);
+	nextCell.appendChild(firstEffect);
+	playButtonSound();
+	clearMatches(start.cell, nextCell);
+	finishMove();
+});
+
+window.addEventListener('pointercancel', function (event) {
+	if (swipeStart !== null && event.pointerId === swipeStart.pointerId) {
+		swipeStart = null;
+	}
+});
+
 // Create 6 rows with 7 cells in each row.
 for (let row = 0; row < 6; row += 1) {
 	for (let column = 0; column < 7; column += 1) {
@@ -375,36 +641,6 @@ for (let row = 0; row < 6; row += 1) {
 		effectIcon.style.animationDelay = `${Math.random() * 2}s`;
 		cell.appendChild(effectIcon);
 		gameGrid.appendChild(cell);
-
-		cell.addEventListener('click', function () {
-			if (gameOver) {
-				return;
-			}
-
-			if (selectedCell === null) {
-				selectedCell = cell;
-				cell.classList.add('selected');
-			} else if (selectedCell === cell) {
-				cell.classList.remove('selected');
-				selectedCell = null;
-			} else {
-				const rowDistance = Math.abs(row - Number(selectedCell.dataset.row));
-				const columnDistance = Math.abs(column - Number(selectedCell.dataset.column));
-
-				if (rowDistance + columnDistance === 1) {
-					const selectedEffect = selectedCell.firstElementChild;
-					const clickedEffect = cell.firstElementChild;
-
-					selectedCell.appendChild(clickedEffect);
-					cell.appendChild(selectedEffect);
-					selectedCell.classList.remove('selected');
-					const firstSwappedCell = selectedCell;
-					selectedCell = null;
-					clearMatches(firstSwappedCell, cell);
-					finishMove();
-				}
-			}
-		});
 	}
 }
 

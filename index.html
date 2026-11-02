@@ -10,7 +10,7 @@
     <main class="start-screen" id="start-screen">
         <div class="welcome-line">
             <img class="welcome-logo" src="img/water-can.png" alt="">
-            <p class="welcome-message">Welcome to the Charity Water Game Prototype</p>
+            <p class="welcome-message">Welcome to the Charity Water Game</p>
             <img class="welcome-logo" src="img/water-can.png" alt="">
         </div>
         <div class="start-progress">
@@ -35,9 +35,9 @@
         <div class="start-actions">
             <button class="start-button" id="start-button" type="button">Start</button>
             <div class="difficulty-buttons" role="group" aria-label="Choose difficulty">
-                <button class="difficulty-button" type="button" data-moves="25" aria-pressed="false">Easy</button>
-                <button class="difficulty-button" type="button" data-moves="20" aria-pressed="true">Regular</button>
-                <button class="difficulty-button" type="button" data-moves="15" aria-pressed="false">Hard</button>
+                <button class="difficulty-button" type="button" data-moves="25" data-points-per-match="2" aria-pressed="false">Easy</button>
+                <button class="difficulty-button" type="button" data-moves="20" data-points-per-match="3" aria-pressed="true">Regular</button>
+                <button class="difficulty-button" type="button" data-moves="15" data-points-per-match="4" aria-pressed="false">Hard</button>
             </div>
         </div>
         <footer class="start-footer">
@@ -47,7 +47,7 @@
     <main id="game-screen" hidden>
         <div class="welcome-line">
             <img class="welcome-logo" src="img/water-can.png" alt="">
-            <p class="welcome-message">Welcome to the Charity Water Game Prototype</p>
+            <p class="welcome-message">Welcome to the Charity Water Game</p>
             <img class="welcome-logo" src="img/water-can.png" alt="">
         </div>
         <h1 id="game-title" tabindex="-1">Water Wash</h1>
@@ -74,7 +74,10 @@
                     <p class="game-message" id="game-message" aria-live="polite"></p>
                 </div>
                 <button class="extra-life-button" id="extra-life-button" type="button" aria-label="Buy one extra move for 10 points" title="Buy one extra move for 10 points" disabled>+</button>
-                <button class="restart-button" id="restart-button" type="button" hidden>Restart</button>
+                <button class="restart-button" id="restart-button" type="button" hidden>
+                    <span class="round-result" id="round-result" aria-live="assertive"></span>
+                    <span>Restart?</span>
+                </button>
             </aside>
         </div>
     </main>

@@ -422,20 +422,39 @@ h1 {
 	color: #F5402C;
 }
 
+.round-result {
+	display: block;
+	font-size: clamp(2rem, 7vw, 3rem);
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+.round-result.win {
+	color: #159A48;
+}
+
+.round-result.lose {
+	color: #F5402C;
+}
+
 .restart-button {
 	position: fixed;
-	top: 50%;
+	top: 60%;
 	left: 50%;
 	z-index: 10;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.5rem;
 	transform: translate(-50%, -50%);
 	margin: 0;
-	padding: 1rem 1.5rem;
+	padding: 1.25rem 2rem;
 	border: 0;
 	border-radius: 4px;
 	background-color: #1F1D1D;
 	color: #fff;
 	font: inherit;
-	font-size: 3rem;
+	font-size: clamp(3rem, 9vw, 4rem);
 	line-height: 1.1;
 	cursor: pointer;
 }
@@ -458,11 +477,63 @@ h1 {
 	pointer-events: none;
 }
 
+.round-end-effect {
+	position: fixed;
+	inset: 0;
+	z-index: 5;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.round-end-effect-piece {
+	position: absolute;
+	top: -12vh;
+}
+
+.rain-effect .round-end-effect-piece {
+	width: 2px;
+	height: 1.5rem;
+	background: linear-gradient(transparent, #2E9DF7);
+	opacity: 0.75;
+	animation-name: rain-fall;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+}
+
+.confetti-effect .round-end-effect-piece {
+	width: 0.55rem;
+	height: 0.85rem;
+	background-color: #FFC907;
+	animation-name: confetti-fall;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+}
+
+.confetti-effect .round-end-effect-piece:nth-child(4n + 1) {
+	background-color: #2E9DF7;
+}
+
+.confetti-effect .round-end-effect-piece:nth-child(4n + 2) {
+	background-color: #4FCB53;
+}
+
+.confetti-effect .round-end-effect-piece:nth-child(4n + 3) {
+	background-color: #FF902A;
+}
+
+.confetti-effect .round-end-effect-piece:nth-child(3n) {
+	width: 0.4rem;
+	height: 0.4rem;
+	border-radius: 50%;
+}
+
 .grid-cell {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
+	touch-action: none;
+	user-select: none;
 	border: 2px solid #1F1D1D;
 	border-radius: 4px;
 	background-color: #FFC907;
@@ -544,10 +615,26 @@ h1 {
 	}
 }
 
+@keyframes rain-fall {
+	to {
+		transform: translate(-4vw, 115vh) rotate(15deg);
+	}
+}
+
+@keyframes confetti-fall {
+	to {
+		transform: translate(3vw, 115vh) rotate(720deg);
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.cell-effect,
 	.cell-effect.disappearing {
 		animation: none;
+	}
+
+	.round-end-effect {
+		display: none;
 	}
 }
 
@@ -630,6 +717,6 @@ h1 {
 
 @media (max-width: 360px) {
 	.restart-button {
-		font-size: 2.5rem;
+		font-size: 3rem;
 	}
 }
